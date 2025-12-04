@@ -73,6 +73,13 @@ export class InputFormComponent implements OnInit {
     });
   }
 
+addAssociation(value: string): void {І
+  const trimmed = value.trim();
+  if (trimmed && !this.associations.includes(trimmed)) {
+    this.associations.push(trimmed);
+  }
+}
+  
   nextStep(): void {
     if (this.activeIndex < this.steps.length - 1) {
       this.activeIndex++;
