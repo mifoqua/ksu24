@@ -61,47 +61,25 @@
           </div>
         </div>
 
-       <!-- Step 3: Associations -->
-<div *ngIf="activeIndex === 2" class="step step-3">
-  <div class="step-header">
-    <h2>Що викликало ці емоції?</h2>
-    <p class="step-description">Додайте асоціації або причини</p>
-  </div>
+        <!-- Step 3: Associations -->
+        <div *ngIf="activeIndex === 2" class="step step-3">
+          <div class="step-header">
+            <h2>Що викликало ці емоції?</h2>
+            <p class="step-description">Додайте асоціації або причини</p>
+          </div>
 
-  <div class="form-field">
-    <div class="input-with-button">
-      <input 
-        #associationInput
-        type="text" 
-        pInputText
-        placeholder="Почніть вводити..."
-        (keydown.enter)="addAssociation(associationInput.value); associationInput.value=''"
-        class="association-input"
-      />
-      <p-button
-        icon="pi pi-plus"
-        [text]="true"
-        [rounded]="true"
-        severity="info"
-        (onClick)="addAssociation(associationInput.value); associationInput.value=''"
-      ></p-button>
-    </div>
-
-    <div class="chips-display" *ngIf="associations.length > 0">
-      <p-chip 
-        *ngFor="let item of associations; let i = index"
-        [label]="item"
-        [removable]="true"
-        (onRemove)="associations.splice(i, 1)"
-      ></p-chip>
-    </div>
-
-    <p class="hint-text">
-      <i class="pi pi-info-circle"></i>
-      Натисніть Enter або кнопку "+" для додавання асоціацій
-    </p>
-  </div>
-</div>
+          <div class="form-field">
+            <p-chips
+              [(ngModel)]="associations"
+              placeholder="Почніть вводити..."
+              styleClass="w-full"
+            ></p-chips>
+            <p class="hint-text">
+              <i class="pi pi-info-circle"></i>
+              Використовуйте Enter для додавання нових асоціацій
+            </p>
+          </div>
+        </div>
 
         <!-- Step 4: Note -->
         <div *ngIf="activeIndex === 3" class="step step-4">
