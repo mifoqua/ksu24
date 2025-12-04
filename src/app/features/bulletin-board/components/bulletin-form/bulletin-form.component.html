@@ -1,0 +1,149 @@
+<div class="bulletin-form-container">
+  <p-toast></p-toast>
+
+  <form [formGroup]="bulletinForm" (ngSubmit)="onSubmit()">
+    <div class="form-section">
+      <h3 class="section-title">Основна інформація</h3>
+
+      <div class="form-field">
+        <label for="title">
+          <i class="pi pi-pencil"></i>
+          Заголовок <span class="required">*</span>
+        </label>
+        <input
+          id="title"
+          type="text"
+          pInputText
+          formControlName="title"
+          placeholder="Введіть заголовок оголошення"
+          [class.ng-invalid]="title?.invalid && title?.touched"
+        />
+        <small class="p-error" *ngIf="title?.invalid && title?.touched">
+          <i class="pi pi-exclamation-circle"></i>
+          <span *ngIf="title?.errors?.['required']">Заголовок обов'язковий</span>
+          <span *ngIf="title?.errors?.['minlength']">Мінімум 5 символів</span>
+        </small>
+      </div>
+
+      <div class="form-row" [class.form-row-three]="isAdminMode">
+        <div class="form-field">
+          <label for="category">
+            <i class="pi pi-tag"></i>
+            Категорія <span class="required">*</span>
+          </label>
+          <p-dropdown
+            id="category"
+            [options]="categories"
+            formControlName="category"
+            placeholder="Виберіть категорію"
+            optionLabel="label"
+            optionValue="value"
+            [class.ng-invalid]="category?.invalid && category?.touched"
+          ></p-dropdown>
+          <small class="p-error" *ngIf="category?.invalid && category?.touched">
+            <i class="pi pi-exclamation-circle"></i>
+            Категорія обов'язкова
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="status">
+            <i class="pi pi-circle"></i>
+            Статус <span class="required">*</span>
+          </label>
+          <p-dropdown
+            id="status"
+            [options]="statusOptions"
+            formControlName="status"
+            placeholder="Виберіть статус"
+            optionLabel="label"
+            optionValue="value"
+          ></p-dropdown>
+        </div>
+
+        <div class="form-field" *ngIf="isAdminMode">
+          <label for="author">
+            <i class="pi pi-user"></i>
+            Автор <span class="required">*</span>
+          </label>
+          <p-dropdown
+            id="author"
+            [options]="authorOptions"
+            formControlName="authorId"
+            placeholder="Виберіть автора"
+            optionLabel="label"
+            optionValue="value"
+            [class.ng-invalid]="authorId?.invalid && authorId?.touched"
+          ></p-dropdown>
+          <small class="p-error" *ngIf="authorId?.invalid && authorId?.touched">
+            <i class="pi pi-exclamation-circle"></i>
+            Автор обов'язковий
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">
+        <i class="pi pi-file-edit"></i>
+        Вміст оголошення
+      </h3>
+
+      <div class="form-field editor-field">
+        <label for="content">
+          Текст <span class="required">*</span>
+        </label>
+        <p-editor
+          formControlName="content"
+          [style]="{ height: '360px' }"
+          [class.ng-invalid]="content?.invalid && content?.touched"
+        >
+          <ng-template pTemplate="header">
+            <span class="ql-formats">
+              <button type="button" class="ql-bold" aria-label="Bold"></button>
+              <button type="button" class="ql-italic" aria-label="Italic"></button>
+              <button type="button" class="ql-underline" aria-label="Underline"></button>
+            </span>
+            <span class="ql-formats">
+              <select class="ql-header">
+                <option value="1">Heading 1</option>
+                <option value="2">Heading 2</option>
+                <option value="3">Heading 3</option>
+                <option selected></option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+              <button type="button" class="ql-list" value="bullet" aria-label="Unordered List"></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link" aria-label="Insert Link"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+        <small class="p-error" *ngIf="content?.invalid && content?.touched">
+          <i class="pi pi-exclamation-circle"></i>
+          <span *ngIf="content?.errors?.['required']">Вміст обов'язковий</span>
+          <span *ngIf="content?.errors?.['minlength']">Мінімум 10 символів</span>
+        </small>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Скасувати"
+        icon="pi pi-times"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="onCancel()"
+        type="button"
+      ></p-button>
+      <p-button
+        [label]="isEditMode ? 'Зберегти зміни' : 'Створити'"
+        icon="pi pi-check"
+        type="submit"
+        [loading]="loading"
+      ></p-button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h1>Моя емоційна статистика</h1>
+    <p-button
+      label="Додати запис"
+      icon="pi pi-plus"
+      (onClick)="navigateToInput()"
+    ></p-button>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <p-card>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="pi pi-chart-line"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Середній стан</div>
+          <div class="stat-value">{{ getAverageState() }}</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="pi pi-calendar"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Всього записів</div>
+          <div class="stat-value">{{ states.length }}</div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="pi pi-heart"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-label">Останні емоції</div>
+          <div class="stat-value-small">{{ getRecentEmotions() }}</div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-section">
+    <p-card header="Динаміка емоційного стану">
+      <div *ngIf="chartData" class="chart-container">
+        <p-chart type="line" [data]="chartData" [options]="chartOptions" height="300"></p-chart>
+      </div>
+      <div *ngIf="!chartData || states.length === 0" class="empty-state">
+        <i class="pi pi-chart-line"></i>
+        <p>Поки немає даних для відображення</p>
+        <p-button
+          label="Додати перший запис"
+          icon="pi pi-plus"
+          [outlined]="true"
+          (onClick)="navigateToInput()"
+        ></p-button>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Recent Entries -->
+  <div class="recent-section">
+    <p-card header="Останні записи">
+      <div *ngIf="states.length > 0" class="entries-list">
+        <div class="entry-item" *ngFor="let state of states.slice(0, 5)">
+          <div class="entry-header">
+            <div class="entry-date">
+              <i class="pi pi-calendar"></i>
+              {{ state.createdAt | date:'dd.MM.yyyy HH:mm' }}
+            </div>
+            <div class="entry-state">
+              Стан: <strong>{{ state.generalState }}/10</strong>
+            </div>
+          </div>
+          <div class="entry-emotions">
+            <span class="emotion-tag" *ngFor="let emotion of state.emotions">
+              {{ emotion }}
+            </span>
+          </div>
+          <div class="entry-note" *ngIf="state.note">
+            <p>{{ state.note }}</p>
+          </div>
+          <div class="entry-associations" *ngIf="state.associations.length > 0">
+            <i class="pi pi-tags"></i>
+            <span class="association-chip" *ngFor="let assoc of state.associations">
+              {{ assoc }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="states.length === 0" class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <p>У вас ще немає записів</p>
+      </div>
+    </p-card>
+  </div>
+</div>

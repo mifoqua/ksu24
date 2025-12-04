@@ -1,0 +1,134 @@
+<div class="input-form-container">
+  <p-toast></p-toast>
+
+  <div class="form-card">
+    <div class="card-header">
+      <div class="header-content">
+        <h1>Моніторинг емоційного стану</h1>
+        <p>Заповніть форму для відстеження вашого поточного стану</p>
+      </div>
+    </div>
+
+    <div class="wizard-container">
+      <div class="steps-wrapper">
+        <p-steps [model]="steps" [activeIndex]="activeIndex" [readonly]="true"></p-steps>
+      </div>
+
+      <div class="step-content">
+        <!-- Step 1: General State -->
+        <div *ngIf="activeIndex === 0" class="step step-1">
+          <div class="step-header">
+            <h2>Оцініть ваш загальний стан</h2>
+            <p class="step-description">Виберіть значення від 1 (дуже погано) до 10 (чудово)</p>
+          </div>
+
+          <div class="emotion-scale">
+            <div class="scale-grid">
+              <button
+                *ngFor="let num of [1,2,3,4,5,6,7,8,9,10]"
+                class="scale-button"
+                [class.active]="generalState === num"
+                (click)="generalState = num"
+                type="button">
+                <div class="button-content">
+                  <span class="emoji">{{ getEmoji(num) }}</span>
+                  <span class="number">{{ num }}</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Emotions -->
+        <div *ngIf="activeIndex === 1" class="step step-2">
+          <div class="step-header">
+            <h2>Виберіть емоції, які ви відчуваєте</h2>
+            <p class="step-description">Можна вибрати декілька варіантів</p>
+          </div>
+
+          <div class="form-field">
+            <p-multiSelect
+              [options]="emotionOptions"
+              [(ngModel)]="selectedEmotions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Виберіть емоції"
+              [showHeader]="false"
+              display="chip"
+              [maxSelectedLabels]="14"
+              styleClass="w-full"
+            ></p-multiSelect>
+          </div>
+        </div>
+
+        <!-- Step 3: Associations -->
+        <div *ngIf="activeIndex === 2" class="step step-3">
+          <div class="step-header">
+            <h2>Що викликало ці емоції?</h2>
+            <p class="step-description">Додайте асоціації або причини</p>
+          </div>
+
+          <div class="form-field">
+            <p-chips
+              [(ngModel)]="associations"
+              placeholder="Почніть вводити..."
+              styleClass="w-full"
+            ></p-chips>
+            <p class="hint-text">
+              <i class="pi pi-info-circle"></i>
+              Використовуйте Enter для додавання нових асоціацій
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4: Note -->
+        <div *ngIf="activeIndex === 3" class="step step-4">
+          <div class="step-header">
+            <h2>Додайте нотатку (необов'язково)</h2>
+            <p class="step-description">Опишіть ваш стан більш детально</p>
+          </div>
+
+          <div class="form-field">
+            <textarea
+              pInputTextarea
+              [(ngModel)]="note"
+              rows="8"
+              placeholder="Напишіть свої думки..."
+              class="w-full"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <p-button
+          label="Назад"
+          icon="pi pi-arrow-left"
+          [outlined]="true"
+          (onClick)="prevStep()"
+          [disabled]="activeIndex === 0"
+          severity="secondary"
+        ></p-button>
+
+        <div class="action-right">
+          <p-button
+            *ngIf="activeIndex < steps.length - 1"
+            label="Далі"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            (onClick)="nextStep()"
+            [disabled]="!canProceed()"
+          ></p-button>
+
+          <p-button
+            *ngIf="activeIndex === steps.length - 1"
+            label="Зберегти"
+            icon="pi pi-check"
+            (onClick)="onSubmit()"
+            [loading]="loading"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

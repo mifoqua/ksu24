@@ -1,0 +1,120 @@
+<div class="admin-view-container">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="main-card">
+    <div class="card-header">
+      <div class="header-content">
+        <h1>Усі оголошення</h1>
+        <p>Панель адміністратора для керування оголошеннями</p>
+      </div>
+      <p-button
+        label="Створити оголошення"
+        icon="pi pi-plus"
+        (onClick)="openNew()"
+        styleClass="create-button"
+      ></p-button>
+    </div>
+
+    <div class="search-wrapper">
+      <span class="p-input-icon-left search-field">
+        <i class="pi pi-search"></i>
+        <input
+          #searchInput
+          pInputText
+          type="text"
+          placeholder="Пошук за назвою, категорією або автором..."
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+        />
+      </span>
+    </div>
+
+    <div class="table-wrapper">
+      <p-table
+        #dt
+        [value]="bulletins"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [responsive]="true"
+        styleClass="p-datatable-gridlines"
+        [globalFilterFields]="['title', 'category', 'authorName']"
+      >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="title">Заголовок <p-sortIcon field="title"></p-sortIcon></th>
+          <th pSortableColumn="category">Категорія <p-sortIcon field="category"></p-sortIcon></th>
+          <th pSortableColumn="authorName">Автор <p-sortIcon field="authorName"></p-sortIcon></th>
+          <th pSortableColumn="status">Статус <p-sortIcon field="status"></p-sortIcon></th>
+          <th pSortableColumn="createdAt">Створено <p-sortIcon field="createdAt"></p-sortIcon></th>
+          <th style="width: 180px;">Дії</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-bulletin>
+        <tr>
+          <td>{{ bulletin.title }}</td>
+          <td>{{ bulletin.category }}</td>
+          <td>{{ bulletin.authorName }}</td>
+          <td>
+            <span class="status-badge status-{{ bulletin.status }}">
+              {{ getStatusLabel(bulletin.status) }}
+            </span>
+          </td>
+          <td>{{ bulletin.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+          <td>
+            <div class="action-buttons">
+              <p-button
+                icon="pi pi-pencil"
+                [rounded]="true"
+                [outlined]="true"
+                severity="info"
+                (onClick)="editBulletin(bulletin)"
+                pTooltip="Редагувати"
+              ></p-button>
+              <p-button
+                icon="pi pi-trash"
+                [rounded]="true"
+                [outlined]="true"
+                severity="danger"
+                (onClick)="deleteBulletin(bulletin)"
+                pTooltip="Видалити"
+              ></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-message">
+            <div class="empty-state">
+              <i class="pi pi-inbox"></i>
+              <p>Оголошень не знайдено</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    </div>
+  </div>
+
+  <!-- Dialog for Create/Edit -->
+  <p-dialog
+    [(visible)]="displayDialog"
+    [header]="isEditMode ? 'Редагувати оголошення' : 'Створити оголошення'"
+    [modal]="true"
+    [style]="{ width: '90vw', maxWidth: '900px' }"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="onDialogHide()"
+  >
+    <ng-container *ngIf="displayDialog">
+      <app-bulletin-form
+        [bulletin]="selectedBulletin"
+        [isEditMode]="isEditMode"
+        [isAdminMode]="true"
+        (saved)="onBulletinSaved()"
+        (cancelled)="displayDialog = false"
+      ></app-bulletin-form>
+    </ng-container>
+  </p-dialog>
+</div>

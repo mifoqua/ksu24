@@ -1,0 +1,111 @@
+<div class="user-view-container">
+  <!-- Professional Header with Gradient -->
+  <div class="page-card">
+    <div class="card-header">
+      <div class="header-content">
+        <h1>Дошка оголошень</h1>
+        <p>Перегляньте актуальні оголошення та новини</p>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <div class="filters-grid">
+        <div class="filter-item">
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input
+              type="text"
+              pInputText
+              placeholder="Пошук оголошень..."
+              [(ngModel)]="searchText"
+              (ngModelChange)="applyFilters()"
+              class="w-full"
+            />
+          </span>
+        </div>
+
+        <div class="filter-item">
+          <p-dropdown
+            [options]="categories"
+            [(ngModel)]="selectedCategory"
+            (ngModelChange)="applyFilters()"
+            placeholder="Всі категорії"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="false"
+            styleClass="w-full"
+          ></p-dropdown>
+        </div>
+
+        <div class="filter-item">
+          <p-calendar
+            [(ngModel)]="selectedDate"
+            (ngModelChange)="applyFilters()"
+            placeholder="Фільтр за датою"
+            dateFormat="dd.mm.yy"
+            [showIcon]="true"
+            [showClear]="true"
+            appendTo="body"
+            styleClass="w-full"
+          ></p-calendar>
+        </div>
+      </div>
+    </div>
+
+  <!-- Bulletins Grid -->
+  <div class="bulletins-grid">
+    <div class="p-grid">
+      <div class="p-col-12 p-md-6 p-lg-4" *ngFor="let bulletin of getPaginatedBulletins()">
+        <p-card [header]="bulletin.title">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <span class="category-badge">{{ getCategoryLabel(bulletin.category) }}</span>
+            </div>
+          </ng-template>
+
+          <div class="bulletin-content">
+            <p>{{ getExcerpt(bulletin.content) }}</p>
+          </div>
+
+          <ng-template pTemplate="footer">
+            <div class="bulletin-meta">
+              <div class="author-info">
+                <i class="pi pi-user"></i>
+                <span>{{ bulletin.authorName }}</span>
+              </div>
+              <div class="date-info">
+                <i class="pi pi-calendar"></i>
+                <span>{{ bulletin.createdAt | date:'dd.MM.yyyy' }}</span>
+              </div>
+            </div>
+            <p-button
+              label="Читати далі"
+              icon="pi pi-arrow-right"
+              [outlined]="true"
+              styleClass="w-full"
+            ></p-button>
+          </ng-template>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredBulletins.length === 0">
+      <i class="pi pi-inbox"></i>
+      <p>Оголошень не знайдено</p>
+    </div>
+  </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section" *ngIf="filteredBulletins.length > 0">
+      <p-paginator
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="totalRecords"
+        [rowsPerPageOptions]="[6, 12, 24]"
+        (onPageChange)="onPageChange($event)"
+      ></p-paginator>
+    </div>
+  </div>
+</div>

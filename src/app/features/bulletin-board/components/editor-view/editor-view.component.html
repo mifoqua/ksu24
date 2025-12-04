@@ -1,0 +1,140 @@
+<div class="editor-view-container">
+  <div class="main-card">
+    <div class="card-header">
+      <div class="header-content">
+        <h1>Мої оголошення</h1>
+        <p>Керуйте своїми оголошеннями</p>
+      </div>
+      <p-button
+        label="Створити оголошення"
+        icon="pi pi-plus"
+        (onClick)="openNew()"
+        styleClass="create-button"
+      ></p-button>
+    </div>
+
+    <div class="table-wrapper">
+      <p-table
+        [value]="bulletins"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 30]"
+        [responsive]="true"
+        styleClass="p-datatable-gridlines"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Заголовок</th>
+            <th>Категорія</th>
+            <th>Статус</th>
+            <th>Дата створення</th>
+            <th>Дата оновлення</th>
+            <th style="width: 150px;">Дії</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bulletin>
+          <tr>
+            <td>{{ bulletin.title }}</td>
+            <td>{{ bulletin.category }}</td>
+            <td>
+              <span class="status-badge status-{{ bulletin.status }}">
+                {{ getStatusLabel(bulletin.status) }}
+              </span>
+            </td>
+            <td>{{ bulletin.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+            <td>{{ bulletin.updatedAt | date:'dd.MM.yyyy HH:mm' }}</td>
+            <td>
+              <div class="action-buttons">
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [outlined]="true"
+                  severity="info"
+                  (onClick)="editBulletin(bulletin)"
+                  pTooltip="Редагувати"
+                ></p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [outlined]="true"
+                  severity="danger"
+                  (onClick)="confirmDelete(bulletin)"
+                  pTooltip="Видалити"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="empty-message">
+              <div class="empty-state">
+                <i class="pi pi-inbox"></i>
+                <p>У вас ще немає оголошень</p>
+                <p-button
+                  label="Створити перше оголошення"
+                  icon="pi pi-plus"
+                  (onClick)="openNew()"
+                  [outlined]="true"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- Dialog for Create/Edit -->
+  <p-dialog
+    [(visible)]="displayDialog"
+    [header]="isEditMode ? 'Редагувати оголошення' : 'Створити оголошення'"
+    [modal]="true"
+    [style]="{ width: '90vw', maxWidth: '900px' }"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="onDialogHide()"
+  >
+    <ng-container *ngIf="displayDialog">
+      <app-bulletin-form
+        [bulletin]="selectedBulletin"
+        [isEditMode]="isEditMode"
+        (saved)="onBulletinSaved()"
+        (cancelled)="displayDialog = false"
+      ></app-bulletin-form>
+    </ng-container>
+  </p-dialog>
+
+  <!-- Delete Confirmation Dialog -->
+  <p-dialog
+    [(visible)]="displayDeleteDialog"
+    header="Підтвердження видалення"
+    [modal]="true"
+    [style]="{ width: '450px', maxWidth: '95vw' }"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <div class="delete-dialog-content">
+      <i class="pi pi-exclamation-triangle"></i>
+      <p>Ви впевнені, що хочете видалити оголошення <strong>"{{ bulletinToDelete?.title }}"</strong>?</p>
+      <p class="warning-text">Цю дію не можна буде скасувати.</p>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="dialog-actions">
+        <p-button
+          label="Скасувати"
+          icon="pi pi-times"
+          [outlined]="true"
+          severity="secondary"
+          (onClick)="cancelDelete()"
+        ></p-button>
+        <p-button
+          label="Видалити"
+          icon="pi pi-trash"
+          severity="danger"
+          (onClick)="deleteBulletin()"
+        ></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

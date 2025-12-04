@@ -1,0 +1,72 @@
+<div class="app-layout">
+  <!-- Overlay для мобільних -->
+  <div class="sidebar-overlay"
+       *ngIf="!sidebarCollapsed && isMobile"
+       (click)="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <!-- Logo/Header -->
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/MAIN LOGO HDU SMALL.png" alt="KSU24 Logo" class="logo-image">
+        <span *ngIf="!sidebarCollapsed">KSU24</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <div class="nav-section" *ngFor="let item of navItems">
+        <div class="nav-item" (click)="toggleNavItem(item)" [class.expanded]="item.expanded">
+          <div class="nav-item-header">
+            <i [class]="item.icon"></i>
+            <span *ngIf="!sidebarCollapsed" class="nav-label">{{ item.label }}</span>
+            <i *ngIf="!sidebarCollapsed && item.items"
+               class="pi expand-icon"
+               [class.pi-chevron-down]="item.expanded"
+               [class.pi-chevron-right]="!item.expanded"></i>
+          </div>
+        </div>
+
+        <!-- Subitems -->
+        <div class="nav-subitems" *ngIf="item.expanded && item.items && !sidebarCollapsed">
+          <a *ngFor="let subitem of item.items"
+             [routerLink]="subitem.routerLink"
+             routerLinkActive="active"
+             class="nav-subitem">
+            <i [class]="subitem.icon"></i>
+            <span>{{ subitem.label }}</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Toggle Button -->
+    <div class="sidebar-toggle" (click)="toggleSidebar()">
+      <i class="pi" [class.pi-chevron-left]="!sidebarCollapsed" [class.pi-chevron-right]="sidebarCollapsed"></i>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="top-bar-content">
+        <button class="mobile-menu-button" (click)="toggleSidebar()" *ngIf="isMobile">
+          <i class="pi pi-bars"></i>
+        </button>
+        <h1 class="page-title">Навчальний модуль KSU24</h1>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>&copy; 2025 KSU24 - Навчальний проект</p>
+    </footer>
+  </div>
+</div>
