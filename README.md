@@ -46,24 +46,22 @@
    ```bash
    git clone [https://github.com/your-username/ksu24-module.git](https://github.com/your-username/ksu24-module.git)
    cd ksu24
+   ```
 
 2. **Встановіть залежності:**
-
   ```bash
-
   npm install
+  ```
 
 3. **Запустіть локальний сервер:**
-
   ```bash
-
   ng serve
+  ```
 
 4. **Відкрийте в браузері:**
-
   Перейдіть за посиланням http://localhost:4200/.
 
-Структура проекту
+## Структура проекту
 
 src/app/core - основні сервіси та моделі даних.
 
