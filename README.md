@@ -43,10 +43,10 @@
 Переконайтеся, що у вас встановлено [Node.js](https://nodejs.org/).
 
 1. **Клонуйте репозиторій:**
-   ```bash
-   git clone [https://github.com/your-username/ksu24-module.git](https://github.com/your-username/ksu24-module.git)
-   cd ksu24
-   ```
+  ```bash
+  git clone [https://github.com/your-username/ksu24-module.git](https://github.com/your-username/ksu24-module.git)
+  cd ksu24
+  ```
 
 2. **Встановіть залежності:**
   ```bash
