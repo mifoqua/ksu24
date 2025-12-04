@@ -17,18 +17,6 @@ export class InputFormComponent implements OnInit {
 
   // Step 1
   generalState: number = 5;
-  stateOptions = [
-    { label: '1', value: 1 },
-    { label: '2', value: 2 },
-    { label: '3', value: 3 },
-    { label: '4', value: 4 },
-    { label: '5', value: 5 },
-    { label: '6', value: 6 },
-    { label: '7', value: 7 },
-    { label: '8', value: 8 },
-    { label: '9', value: 9 },
-    { label: '10', value: 10 }
-  ];
 
   // Step 2
   emotionOptions: EmotionOption[] = [];
@@ -36,11 +24,11 @@ export class InputFormComponent implements OnInit {
 
   // Step 3
   associations: string[] = [];
-  associationSuggestions: string[] = [];
+  
+  inputText: string = '';
 
   // Step 4
   note: string = '';
-
   loading: boolean = false;
 
   constructor(
@@ -56,7 +44,6 @@ export class InputFormComponent implements OnInit {
       { label: 'Асоціації' },
       { label: 'Нотатка' }
     ];
-
     this.loadEmotionOptions();
   }
 
@@ -66,11 +53,20 @@ export class InputFormComponent implements OnInit {
     });
   }
 
-  searchAssociations(event: any): void {
-    const query = event.query;
-    this.emotionalStateService.getAssociationSuggestions(query).subscribe(suggestions => {
-      this.associationSuggestions = suggestions;
-    });
+  onInput(event: any): void {
+    this.inputText = event.target.value;
+  }
+
+  addCurrentAssociation(): void {
+    const value = this.inputText.trim();
+    if (value && !this.associations.includes(value)) {
+      this.associations.push(value);
+      this.inputText = ''; 
+    }
+  }
+
+  removeAssociation(index: number): void {
+    this.associations.splice(index, 1);
   }
 
   nextStep(): void {
@@ -87,9 +83,8 @@ export class InputFormComponent implements OnInit {
 
   onSubmit(): void {
     this.loading = true;
-
     const emotionalState = {
-      userId: 'user1', // Mock user ID
+      userId: 'user1',
       generalState: this.generalState,
       emotions: this.selectedEmotions,
       associations: this.associations,
@@ -98,22 +93,12 @@ export class InputFormComponent implements OnInit {
 
     this.emotionalStateService.createEmotionalState(emotionalState).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Успіх',
-          detail: 'Дані успішно збережено'
-        });
+        this.messageService.add({ severity: 'success', summary: 'Успіх', detail: 'Дані успішно збережено' });
         this.loading = false;
-        setTimeout(() => {
-          this.router.navigate(['/emotional-monitor/dashboard']);
-        }, 1500);
+        setTimeout(() => this.router.navigate(['/emotional-monitor/dashboard']), 1500);
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Помилка',
-          detail: 'Не вдалося зберегти дані'
-        });
+        this.messageService.add({ severity: 'error', summary: 'Помилка', detail: 'Не вдалося зберегти дані' });
         this.loading = false;
       }
     });
@@ -121,30 +106,15 @@ export class InputFormComponent implements OnInit {
 
   canProceed(): boolean {
     switch (this.activeIndex) {
-      case 0:
-        return this.generalState > 0;
-      case 1:
-        return this.selectedEmotions.length > 0;
-      case 2:
-        return this.associations.length > 0;
-      default:
-        return true;
+      case 0: return this.generalState > 0;
+      case 1: return this.selectedEmotions.length > 0;
+      case 2: return this.associations.length > 0;
+      default: return true;
     }
   }
 
   getEmoji(value: number): string {
-    const emojiMap: { [key: number]: string } = {
-      1: '😭',
-      2: '😢',
-      3: '😟',
-      4: '🙁',
-      5: '😐',
-      6: '🙂',
-      7: '😊',
-      8: '😄',
-      9: '😁',
-      10: '🤩'
-    };
-    return emojiMap[value] || '😐';
+    const map: any = { 1: '😭', 2: '😢', 3: '😟', 4: '🙁', 5: '😐', 6: '🙂', 7: '😊', 8: '😄', 9: '😁', 10: '🤩' };
+    return map[value] || '😐';
   }
 }
